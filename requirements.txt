@@ -2,7 +2,6 @@ streamlit
 nltk
 scikit-learn
 gensim
-scipy==1.12.0
 PyPDF2
 pandas
 numpy
@@ -10,3 +9,4 @@ matplotlib
 wordcloud
 pdfplumber
 spacy
+scipy
