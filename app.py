@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 st.set_page_config(
     page_title="NLP Research Assistant",
-    page_icon="",
+    page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -40,90 +40,294 @@ def main():
 
     st.markdown("""
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
         html, body, [class*="css"] {
             font-family: 'Inter', sans-serif;
         }
+        
+        /* Main Title Styling */
         h1 {
-            color: #1a365d;
-            font-weight: 600;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #e2e8f0;
+            color: #0f172a;
+            font-weight: 700;
+            padding-bottom: 24px;
+            border-bottom: 3px solid #3b82f6;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
         }
+        
+        /* Section Headers */
+        h2 {
+            color: #1e293b;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            padding-left: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        h3 {
+            color: #334155;
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 12px;
+        }
+        
+        /* Metric Cards */
         div[data-testid="stMetric"] {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid #cbd5e1;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .streamlit-expanderHeader {
-            background-color: #f1f5f9;
-            border-radius: 4px;
-            font-weight: 500;
-        }
-        .stButton>button {
-            border-radius: 6px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        .stButton>button:hover {
+        
+        div[data-testid="stMetric"]:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
-        th {
-            background-color: #1e293b !important;
-            color: white !important;
+        
+        div[data-testid="stMetric"] label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        section[data-testid="stSidebar"] {
-            background-color: #f8fafc;
-            border-right: 1px solid #e2e8f0;
+        
+        div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
         }
-        h2, h3 {
-            color: #2d3748;
+        
+        /* Expander Styling */
+        .streamlit-expanderHeader {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-radius: 8px;
             font-weight: 600;
+            padding: 12px 16px;
+            border: 1px solid #bfdbfe;
+            transition: all 0.2s ease;
+        }
+        
+        .streamlit-expanderHeader:hover {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-color: #93c5fd;
+        }
+        
+        /* Button Styling */
+        .stButton>button {
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 12px 32px;
+            transition: all 0.3s ease;
+            border: none;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            font-size: 16px;
+            letter-spacing: 0.3px;
+        }
+        
+        .stButton>button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+        
+        /* Table Styling */
+        th {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+            color: white !important;
+            font-weight: 600 !important;
+            padding: 12px !important;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 10px !important;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        /* Sidebar Styling */
+        section[data-testid="stSidebar"] {
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            border-right: 2px solid #cbd5e1;
+        }
+        
+        section[data-testid="stSidebar"] h1, 
+        section[data-testid="stSidebar"] h2, 
+        section[data-testid="stSidebar"] h3 {
+            color: #0f172a;
+        }
+        
+        /* Info/Warning/Success Boxes */
+        .stAlert {
+            border-radius: 8px;
+            border-left-width: 4px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        /* Tab Styling */
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 8px;
+            background-color: #f8fafc;
+            padding: 8px;
+            border-radius: 8px;
+        }
+        
+        .stTabs [data-baseweb="tab"] {
+            border-radius: 6px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .stTabs [aria-selected="true"] {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+        
+        /* Divider */
+        hr {
+            margin: 32px 0;
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #cbd5e1, transparent);
+        }
+        
+        /* Code blocks */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #dc2626;
+        }
+        
+        /* File uploader */
+        [data-testid="stFileUploader"] {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 24px;
+            background-color: #f8fafc;
+            transition: all 0.2s ease;
+        }
+        
+        [data-testid="stFileUploader"]:hover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        
+        /* Text input and text area */
+        .stTextInput>div>div>input,
+        .stTextArea>div>div>textarea {
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            padding: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .stTextInput>div>div>input:focus,
+        .stTextArea>div>div>textarea:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        /* Slider */
+        .stSlider>div>div>div>div {
+            background-color: #3b82f6;
+        }
+        
+        /* Radio buttons */
+        .stRadio>div {
+            gap: 12px;
+        }
+        
+        /* Status container */
+        [data-testid="stStatus"] {
+            border-radius: 8px;
+            border: 2px solid #cbd5e1;
         }
         </style>
     """, unsafe_allow_html=True)
 
     st.title("Traditional NLP Research Analysis")
-    st.markdown("**Milestone-1**: Classical NLP & ML Techniques for Research Document Analysis")
+    st.markdown("""
+    <div style='background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); 
+                padding: 16px 24px; 
+                border-radius: 8px; 
+                border-left: 4px solid #3b82f6;
+                margin-bottom: 24px;'>
+        <strong style='color: #1e40af; font-size: 16px;'>Milestone-1</strong>: 
+        <span style='color: #334155;'>Classical NLP & ML Techniques for Research Document Analysis</span>
+    </div>
+    """, unsafe_allow_html=True)
 
     with st.expander("Project Overview & Methodology", expanded=False):
         st.markdown("""
-        ### Abstract
-        This system explores the capabilities and limitations of **Traditional Natural Language Processing (NLP)** and **Machine Learning (ML)** techniques applied to research documents.
-
-        Unlike modern Large Language Models (LLMs), this milestone relies entirely on classical, foundational methods:
-        - **Bag-of-Words (BoW) & TF-IDF** for feature extraction and text representation.
-        - **Latent Dirichlet Allocation (LDA) / K-Means** for unsupervised topic modeling and text clustering.
-        - **Heuristics & Statistics** for extractive summarization.
-
-        **Objective**: To establish a baseline of what can be achieved without semantic embeddings and transformer-based reasoning, motivating the necessity of Agentic AI workflows in subsequent milestones.
-        """)
+        <div style='padding: 12px;'>
+            <h3 style='color: #0f172a; margin-top: 0;'>Abstract</h3>
+            <p style='color: #475569; line-height: 1.8; font-size: 15px;'>
+            This system explores the capabilities and limitations of <strong>Traditional Natural Language Processing (NLP)</strong> 
+            and <strong>Machine Learning (ML)</strong> techniques applied to research documents.
+            </p>
+            
+            <p style='color: #475569; line-height: 1.8; font-size: 15px;'>
+            Unlike modern Large Language Models (LLMs), this milestone relies entirely on classical, foundational methods:
+            </p>
+            
+            <ul style='color: #475569; line-height: 1.8; font-size: 15px;'>
+                <li><strong>Bag-of-Words (BoW) & TF-IDF</strong> for feature extraction and text representation</li>
+                <li><strong>Latent Dirichlet Allocation (LDA) / K-Means</strong> for unsupervised topic modeling and text clustering</li>
+                <li><strong>Heuristics & Statistics</strong> for extractive summarization</li>
+            </ul>
+            
+            <div style='background-color: #fef3c7; padding: 16px; border-radius: 6px; border-left: 4px solid #f59e0b; margin-top: 16px;'>
+                <strong style='color: #92400e;'>Objective</strong>: 
+                <span style='color: #78350f;'>To establish a baseline of what can be achieved without semantic embeddings 
+                and transformer-based reasoning, motivating the necessity of Agentic AI workflows in subsequent milestones.</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("---")
 
     with st.sidebar:
-        st.header("Configuration")
-        st.subheader("Topic Modeling")
+        st.markdown("<h2 style='color: #0f172a; margin-bottom: 24px;'>Configuration</h2>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color: #334155; font-size: 18px; margin-bottom: 12px;'>Topic Modeling</h3>", unsafe_allow_html=True)
         num_topics = st.slider("Number of Topics", 2, 10, 5)
         num_keywords = st.slider("Keywords per Topic", 5, 20, 10)
-        st.subheader("Summarization")
+        st.markdown("<h3 style='color: #334155; font-size: 18px; margin-top: 24px; margin-bottom: 12px;'>Summarization</h3>", unsafe_allow_html=True)
         num_sentences = st.slider("Summary Sentences", 3, 10, 5)
         summary_method = st.selectbox(
             "Summarization Method",
             ["TF-IDF", "Frequency-based", "Position-weighted"]
         )
-        st.subheader("Analysis Method")
+        st.markdown("<h3 style='color: #334155; font-size: 18px; margin-top: 24px; margin-bottom: 12px;'>Analysis Method</h3>", unsafe_allow_html=True)
         modeling_method = st.selectbox(
             "Topic Extraction",
             ["LDA (Gensim)", "K-Means Clustering"]
         )
         st.markdown("---")
-        st.info("This system uses only classical NLP techniques - no LLMs or transformers.")
+        st.markdown("""
+        <div style='background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); 
+                    padding: 16px; 
+                    border-radius: 8px; 
+                    border-left: 4px solid #22c55e;
+                    margin-top: 20px;'>
+            <p style='margin: 0; color: #166534; font-size: 14px; line-height: 1.6;'>
+            <strong>Note:</strong> This system uses only classical NLP techniques - no LLMs or transformers.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.header("Input Documents")
+    st.markdown("<h2 style='color: #1e293b; margin-top: 32px;'>Input Documents</h2>", unsafe_allow_html=True)
 
     input_method = st.radio(
         "Choose input method:",
@@ -274,7 +478,7 @@ def run_analysis(documents, num_topics, num_keywords, num_sentences, summary_met
 
 def display_results(results, modeling_method):
     st.markdown("---")
-    st.header("Analysis Results")
+    st.markdown("<h2 style='color: #1e293b; margin-top: 32px; margin-bottom: 24px;'>Analysis Results</h2>", unsafe_allow_html=True)
 
     tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
         "Topics", "Keywords", "Summary", "Evaluation", "Visualizations", "Limitations"
