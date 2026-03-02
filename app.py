@@ -3,6 +3,8 @@ import sys
 from pathlib import Path
 import logging
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 
@@ -501,9 +503,15 @@ def run_analysis(documents, num_topics, num_keywords, num_sentences, summary_met
 
     st.write(f"Step 3/5: Implementing {modeling_method}...")
 
+    # Bound the number of topics to the number of documents to prevent clustering errors
+    num_docs = len(all_tokens)
+    actual_num_topics = min(num_topics, num_docs)
+    if actual_num_topics < num_topics:
+        st.info(f"Target topics automatically reduced from {num_topics} to {actual_num_topics} to match the number of documents provided.")
+
     if modeling_method == "LDA (Gensim)":
         topic_modeler = TopicModeler()
-        lda_model = topic_modeler.train_lda_model(all_tokens, num_topics=num_topics, passes=15)
+        lda_model = topic_modeler.train_lda_model(all_tokens, num_topics=actual_num_topics, passes=15)
         topics = topic_modeler.get_topics(num_words=num_keywords)
         doc_topics = topic_modeler.get_document_topics()
         dominant_topics = topic_modeler.assign_dominant_topic(doc_topics)
@@ -516,7 +524,7 @@ def run_analysis(documents, num_topics, num_keywords, num_sentences, summary_met
         results['coherence_score'] = topic_modeler.calculate_coherence()
     else:
         clusterer = DocumentClusterer()
-        kmeans_model = clusterer.perform_kmeans(tfidf_matrix, n_clusters=num_topics)
+        kmeans_model = clusterer.perform_kmeans(tfidf_matrix, n_clusters=actual_num_topics)
         cluster_labels = clusterer.get_cluster_labels()
         cluster_terms = clusterer.get_top_terms_per_cluster(tfidf_matrix, feature_names, n_terms=num_keywords)
         cluster_stats = clusterer.get_cluster_statistics()
@@ -672,7 +680,8 @@ def generate_wordcloud(word_freq_dict):
         st.pyplot(fig)
         plt.close()
     except Exception as e:
-        st.error("Visualization layer error.")
+        logger.error(f"WordCloud rendering error: {e}", exc_info=True)
+        st.info(f"Visual rendering unavailable for this corpus: {e}")
 
 def plot_topic_keywords(topic_words, topic_id):
     try:
@@ -683,9 +692,10 @@ def plot_topic_keywords(topic_words, topic_id):
             words = topic_words[:10]
             weights = [1] * len(words)
         chart_data = pd.DataFrame({"Weight": weights}, index=words)
-        st.bar_chart(chart_data, horizontal=True, color="#2563eb")
-    except:
-        st.error("Chart rendering error.")
+        st.bar_chart(chart_data)
+    except Exception as e:
+        logger.error(f"Chart rendering error: {e}", exc_info=True)
+        st.error(f"Chart rendering error: {e}")
 
 if __name__ == "__main__":
     main()
